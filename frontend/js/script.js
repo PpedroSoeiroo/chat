@@ -85,7 +85,7 @@ const createWebSocket = () => {
 
     websocket.onclose = (event) => {
         console.log("Conexão WebSocket fechada:", event);
-        setTimeout(createWebSocket, 1000);
+        setTimeout(createWebSocket, 1000); // Reconectar após 1 segundo
     };
 };
 
@@ -105,6 +105,7 @@ const handleLogin = (event) => {
     login.style.display = "none";
     chat.style.display = "flex";
 
+    console.log("Usuário logado:", user); // Log para depuração
     createWebSocket();
 };
 

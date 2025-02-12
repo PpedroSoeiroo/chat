@@ -14,6 +14,8 @@
 body {
     background: url(../images/background\ black.png);
     color: #f2f2f2;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .container {
@@ -35,8 +37,9 @@ body {
     width: 100%;
     max-width: 330px;
     background-color: #212121;
-    border-radius: 5px;
+    border-radius: 10px;
     padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .login__form {
@@ -69,6 +72,7 @@ body {
     background-color: #ddd;
     cursor: pointer;
     color: #121212;
+    transition: background-color 0.3s ease;
 }
 
 .login__button:hover {
@@ -77,10 +81,11 @@ body {
 
 .chat {
     width: 100%;
-    height: 100%;
+    height: 100vh;
     display: none;
     flex-direction: column;
     justify-content: space-between;
+    background-color: #121212;
 }
 
 .chat__messages {
@@ -89,6 +94,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    overflow-y: auto;
 }
 
 .chat__form {
@@ -101,6 +107,7 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .chat__input {
@@ -119,6 +126,9 @@ body {
     background: none;
     color: #f2f2f2;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .chat__button > span {
@@ -133,18 +143,51 @@ body {
     font-weight: 500;
     margin-bottom: 15px;
     line-height: 22px;
+    border-radius: 10px;
 }
 
 .message--self {
-    background-color: #f2f2f2;
-    color: #121212;
+    background-color: #444;
+    color: #f2f2f2;
     border-radius: 10px 10px 0 10px;
     align-self: flex-end;
 }
 
+.message--other {
+    background-color: #333;
+    color: #f2f2f2;
+    border-radius: 10px 10px 10px 0;
+    align-self: flex-start;
+}
+
 .message--sender {
     display: block;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     font-weight: 700;
     color: cadetblue;
+}
+
+.emoji-container {
+    position: relative;
+}
+
+emoji-picker {
+    position: absolute;
+    bottom: 50px;
+    right: 0;
+    display: none;
+    z-index: 10;
+}
+
+.emoji-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #f2f2f2;
+    transition: transform 0.2s ease;
+}
+
+.emoji-button:hover {
+    transform: scale(1.1);
 }
