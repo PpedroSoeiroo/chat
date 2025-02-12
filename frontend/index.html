@@ -1,21 +1,42 @@
-<div class="container">
-    <div class="login">
-        <h2>Chat</h2>
-        <form class="login__form">
-            <input type="text" class="login__input" placeholder="Digite seu nome" required>
-            <button type="submit" class="login__button">Entrar</button>
-        </form>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat WhatsApp Style</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@emoji-mart/react"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Tela de Login -->
+        <div class="login">
+            <h2>Bem-vindo ao Chat</h2>
+            <form class="login__form">
+                <input type="text" class="login__input" placeholder="Digite seu nome" required>
+                <button type="submit" class="login__button">Entrar</button>
+            </form>
+        </div>
+
+        <!-- Tela do Chat -->
+        <div class="chat">
+            <div class="chat__header">
+                <h2>Chat</h2>
+            </div>
+            <div class="chat__messages"></div>
+            <form class="chat__form">
+                <div class="emoji-container">
+                    <button type="button" class="emoji-button">😊</button>
+                    <div class="emoji-picker" style="display: none;">
+                        <emoji-picker></emoji-picker>
+                    </div>
+                </div>
+                <input type="text" class="chat__input" placeholder="Digite sua mensagem">
+                <button type="submit" class="chat__button">Enviar</button>
+            </form>
+        </div>
     </div>
 
-    <div class="chat">
-        <div class="chat__messages"></div>
-        <form class="chat__form">
-            <div class="emoji-container">
-                <button class="emoji-button">😊</button>
-                <emoji-picker></emoji-picker>
-            </div>
-            <input type="text" class="chat__input" placeholder="Digite sua mensagem">
-            <button type="submit" class="chat__button"><span>➤</span></button>
-        </form>
-    </div>
-</div>
+    <script src="script.js"></script>
+</body>
+</html>

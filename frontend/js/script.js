@@ -7,149 +7,107 @@ const chatForm = chat.querySelector(".chat__form");
 const chatInput = chat.querySelector(".chat__input");
 const chatMessages = chat.querySelector(".chat__messages");
 
-// Criando botão de emoji e seletor de emojis
-const emojiContainer = document.createElement("div");
-emojiContainer.classList.add("emoji-container");
+const emojiButton = document.querySelector(".emoji-button");
+const emojiPicker = document.querySelector(".emoji-picker");
 
-const emojiButton = document.createElement("button");
-emojiButton.textContent = "😊";
-emojiButton.classList.add("emoji-button");
-emojiButton.type = "button"; // Impede que o botão envie o formulário
-
-const emojiPicker = document.createElement("emoji-picker");
-emojiPicker.style.display = "none";
-
-emojiContainer.appendChild(emojiButton);
-emojiContainer.appendChild(emojiPicker);
-chatForm.insertBefore(emojiContainer, chatInput); // Adiciona antes do campo de entrada
-
-const colors = ["cadetblue", "darkgoldenrod", "cornflowerblue", "darkkhaki", "hotpink", "gold"];
-
+const colors = ["#007bff", "#28a745", "#dc3545", "#ffc107", "#17a2b8", "#6610f2"];
 const user = { id: "", name: "", color: "" };
 let websocket;
 
-const createMessageSelfElement = (content) => {
-    const div = document.createElement("div");
-    div.classList.add("message--self");
-    div.innerHTML = content;
-    return div;
+// Função para criar mensagens
+const createMessageElement = (content, sender, isSelf) => {
+    const messageDiv = document.createElement("div");
+    messageDiv.classList.add("message", isSelf ? "message--self" : "message--other");
+
+    const senderSpan = document.createElement("span");
+    senderSpan.classList.add("message--sender");
+    senderSpan.style.color = user.color;
+    senderSpan.textContent = sender;
+
+    const contentDiv = document.createElement("div");
+    contentDiv.textContent = content;
+
+    messageDiv.appendChild(senderSpan);
+    messageDiv.appendChild(contentDiv);
+
+    return messageDiv;
 };
 
-const createMessageOtherElement = (content, sender, senderColor) => {
-    const div = document.createElement("div");
-    const span = document.createElement("span");
-
-    div.classList.add("message--other");
-    span.classList.add("message--sender");
-    span.style.color = senderColor;
-
-    span.innerHTML = sender;
-    div.appendChild(span);
-    div.innerHTML += content;
-
-    return div;
-};
-
-const getRandomColor = () => {
-    const randomIndex = Math.floor(Math.random() * colors.length);
-    return colors[randomIndex];
-};
-
-const scrollScreen = () => {
+// Função para rolar a tela para a última mensagem
+const scrollToBottom = () => {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 };
 
-const processMessage = ({ data }) => {
-    const { userid, userName, userColor, content } = JSON.parse(data);
-
-    const message = userid === user.id
-        ? createMessageSelfElement(content)
-        : createMessageOtherElement(content, userName, userColor);
-
-    chatMessages.appendChild(message);
-    scrollScreen();
+// Função para processar mensagens recebidas
+const processMessage = (data) => {
+    const { userid, userName, content } = JSON.parse(data);
+    const isSelf = userid === user.id;
+    const messageElement = createMessageElement(content, userName, isSelf);
+    chatMessages.appendChild(messageElement);
+    scrollToBottom();
 };
 
-const createWebSocket = () => {
-    websocket = new WebSocket("wss://chat-mjcs.onrender.com");
-
-    websocket.onopen = () => {
-        console.log("Conexão WebSocket aberta");
-    };
-
-    websocket.onmessage = processMessage;
-
-    websocket.onerror = (error) => {
-        console.error("Erro no WebSocket:", error);
-    };
-
-    websocket.onclose = (event) => {
-        console.log("Conexão WebSocket fechada:", event);
-        setTimeout(createWebSocket, 1000); // Reconectar após 1 segundo
-    };
-};
-
-const handleLogin = (event) => {
-    event.preventDefault();
-
-    user.id = crypto.randomUUID();
-    user.name = loginInput.value.trim();
-
-    if (!user.name) {
-        alert("Por favor, insira um nome.");
-        return;
-    }
-
-    user.color = getRandomColor();
-
-    login.style.display = "none";
-    chat.style.display = "flex";
-
-    console.log("Usuário logado:", user); // Log para depuração
-    createWebSocket();
-};
-
+// Função para enviar mensagens
 const sendMessage = (event) => {
     event.preventDefault();
 
     if (!websocket || websocket.readyState !== WebSocket.OPEN) {
-        console.error("WebSocket não está aberto. Não é possível enviar a mensagem.");
+        alert("Conexão não estabelecida. Tente novamente.");
         return;
     }
 
-    const messageContent = chatInput.value.trim();
-    if (!messageContent) return; // Evita envio de mensagens vazias
+    const content = chatInput.value.trim();
+    if (!content) return;
 
     const message = {
         userid: user.id,
         userName: user.name,
-        userColor: user.color,
-        content: messageContent
+        content: content,
     };
 
     websocket.send(JSON.stringify(message));
     chatInput.value = "";
-    scrollScreen();
 };
 
-// Evento para abrir/fechar o seletor de emojis
+// Função para abrir/fechar o seletor de emojis
 emojiButton.addEventListener("click", (event) => {
     event.preventDefault();
     emojiPicker.style.display = emojiPicker.style.display === "none" ? "block" : "none";
 });
 
-// Evento para inserir emoji no campo de entrada
+// Função para adicionar emojis ao campo de entrada
 emojiPicker.addEventListener("emoji-click", (event) => {
     chatInput.value += event.detail.unicode;
-    emojiPicker.style.display = "none";  // Esconder após a escolha do emoji
+    emojiPicker.style.display = "none";
 });
 
-// Fechar seletor ao clicar fora
+// Função para fechar o seletor de emojis ao clicar fora
 document.addEventListener("click", (event) => {
     if (!emojiButton.contains(event.target) && !emojiPicker.contains(event.target)) {
         emojiPicker.style.display = "none";
     }
 });
 
-loginForm.addEventListener("submit", handleLogin);
+// Função para lidar com o login
+loginForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    user.id = crypto.randomUUID();
+    user.name = loginInput.value.trim();
+    user.color = colors[Math.floor(Math.random() * colors.length)];
+
+    if (!user.name) {
+        alert("Por favor, insira um nome.");
+        return;
+    }
+
+    login.style.display = "none";
+    chat.style.display = "flex";
+
+    // Simulação de WebSocket (substitua por um servidor real)
+    websocket = new WebSocket("wss://seuservidor.com");
+    websocket.onmessage = (event) => processMessage(event.data);
+});
+
+// Função para enviar mensagens ao enviar o formulário
 chatForm.addEventListener("submit", sendMessage);
