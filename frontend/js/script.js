@@ -27,7 +27,7 @@ const createMessageselfElement = (content) => {
     const div = document.createElement ("div")
 
     div.classList.add ("message--self")
-    div.innerHTML - content
+    div.innerHTML = content;
 
     return div
 }
@@ -65,14 +65,14 @@ const scrollScreen = () => {
 
 
 const processMessage = ({data}) => {
-    const {userid, userName, userColor, contente} = JSON.parse (data)
+    const {userid, userName, userColor, content} = JSON.parse (data)
 
-    const message = 
-    userid == user.id
-    ? createMessageOtherElement (content)
-    : createMessageOtherElement (content, userName, userColoer)
+    const message = userid == user.id
+    ? createMessageselfElement(content)
+    : createMessageOtherElement(content, userName, userColor);
 
-    chatMessages.apperChild (message)
+
+    chatMessages.appenChild (message);
 
     scrollScreen ()
 
@@ -89,7 +89,7 @@ const handleLogin = (event) => {
     login.style.display = "none"
     chat.style.display = "flex"
 
-    websocket = newWebSocket ("ws://localhost:8080")
+    websocket = new WebSocket ("wss://chat-mjcs.onrender.com")
     websocket.onmessage = processMessage
 }
 
@@ -108,5 +108,5 @@ const sendMessage = (event) => {
     chatInput.value = ""
 }
 
-loginform.addEventListener ("submit", handleLogin)
-chatForm.addEventListener ("submit", sendMessage)
+loginInform.addEventListener("submit", handleLogin);
+chatform.addEventListener("submit", sendMessage);
