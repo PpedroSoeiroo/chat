@@ -7,19 +7,21 @@ const chatForm = chat.querySelector(".chat__form");
 const chatInput = chat.querySelector(".chat__input");
 const chatMessages = chat.querySelector(".chat__messages");
 
-// Botão de emojis e seletor
+// Criando botão de emoji e seletor de emojis
+const emojiContainer = document.createElement("div");
+emojiContainer.classList.add("emoji-container");
+
 const emojiButton = document.createElement("button");
 emojiButton.textContent = "😊";
 emojiButton.classList.add("emoji-button");
+emojiButton.type = "button"; // Impede que o botão envie o formulário
 
 const emojiPicker = document.createElement("emoji-picker");
 emojiPicker.style.display = "none";
-emojiPicker.style.position = "absolute";
-emojiPicker.style.bottom = "50px";
-emojiPicker.style.right = "20px";
-document.body.appendChild(emojiPicker);
 
-chatForm.appendChild(emojiButton);
+emojiContainer.appendChild(emojiButton);
+emojiContainer.appendChild(emojiPicker);
+chat.appendChild(emojiContainer); // Adiciona fora do formulário para evitar interferência
 
 const colors = ["cadetblue", "darkgoldenrod", "cornflowerblue", "darkkhaki", "hotpink", "gold"];
 
@@ -116,6 +118,8 @@ const sendMessage = (event) => {
         console.error("WebSocket não está aberto. Não é possível enviar a mensagem.");
         return;
     }
+
+    if (!chatInput.value.trim()) return; // Evita envio de mensagens vazias
 
     const message = {
         userid: user.id,
