@@ -7,17 +7,23 @@ const chatForm = chat.querySelector(".chat__form");
 const chatInput = chat.querySelector(".chat__input");
 const chatMessages = chat.querySelector(".chat__messages");
 
-const colors = [
-    "cadetblue",
-    "darkgoldenrod",
-    "cornflowerblue",
-    "darkkhaki",
-    "hotpink",
-    "gold"
-];
+// Botão de emojis e seletor
+const emojiButton = document.createElement("button");
+emojiButton.textContent = "😊";
+emojiButton.classList.add("emoji-button");
+
+const emojiPicker = document.createElement("emoji-picker");
+emojiPicker.style.display = "none";
+emojiPicker.style.position = "absolute";
+emojiPicker.style.bottom = "50px";
+emojiPicker.style.right = "20px";
+document.body.appendChild(emojiPicker);
+
+chatForm.appendChild(emojiButton);
+
+const colors = ["cadetblue", "darkgoldenrod", "cornflowerblue", "darkkhaki", "hotpink", "gold"];
 
 const user = { id: "", name: "", color: "" };
-
 let websocket;
 
 const createMessageSelfElement = (content) => {
@@ -32,7 +38,6 @@ const createMessageOtherElement = (content, sender, senderColor) => {
     const span = document.createElement("span");
 
     div.classList.add("message--other");
-
     span.classList.add("message--sender");
     span.style.color = senderColor;
 
@@ -81,7 +86,6 @@ const createWebSocket = () => {
 
     websocket.onclose = (event) => {
         console.log("Conexão WebSocket fechada:", event);
-        // Tentar reconectar após 1 segundo
         setTimeout(createWebSocket, 1000);
     };
 };
@@ -123,6 +127,25 @@ const sendMessage = (event) => {
     websocket.send(JSON.stringify(message));
     chatInput.value = "";
 };
+
+// Evento para abrir/fechar o seletor de emojis
+emojiButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    emojiPicker.style.display = emojiPicker.style.display === "none" ? "block" : "none";
+});
+
+// Evento para inserir emoji no campo de entrada
+emojiPicker.addEventListener("emoji-click", (event) => {
+    chatInput.value += event.detail.unicode;
+    emojiPicker.style.display = "none";  // Esconder após a escolha do emoji
+});
+
+// Fechar seletor ao clicar fora
+document.addEventListener("click", (event) => {
+    if (!emojiButton.contains(event.target) && !emojiPicker.contains(event.target)) {
+        emojiPicker.style.display = "none";
+    }
+});
 
 loginForm.addEventListener("submit", handleLogin);
 chatForm.addEventListener("submit", sendMessage);
