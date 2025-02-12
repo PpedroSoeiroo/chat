@@ -21,7 +21,7 @@ emojiPicker.style.display = "none";
 
 emojiContainer.appendChild(emojiButton);
 emojiContainer.appendChild(emojiPicker);
-chat.appendChild(emojiContainer); // Adiciona fora do formulário para evitar interferência
+chatForm.insertBefore(emojiContainer, chatInput); // Adiciona antes do campo de entrada
 
 const colors = ["cadetblue", "darkgoldenrod", "cornflowerblue", "darkkhaki", "hotpink", "gold"];
 
@@ -56,10 +56,7 @@ const getRandomColor = () => {
 };
 
 const scrollScreen = () => {
-    window.scroll({
-        top: document.body.scrollHeight,
-        behavior: "smooth"
-    });
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 };
 
 const processMessage = ({ data }) => {
@@ -119,17 +116,19 @@ const sendMessage = (event) => {
         return;
     }
 
-    if (!chatInput.value.trim()) return; // Evita envio de mensagens vazias
+    const messageContent = chatInput.value.trim();
+    if (!messageContent) return; // Evita envio de mensagens vazias
 
     const message = {
         userid: user.id,
         userName: user.name,
         userColor: user.color,
-        content: chatInput.value
+        content: messageContent
     };
 
     websocket.send(JSON.stringify(message));
     chatInput.value = "";
+    scrollScreen();
 };
 
 // Evento para abrir/fechar o seletor de emojis
