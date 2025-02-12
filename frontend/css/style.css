@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -18,7 +18,7 @@ body {
 
 .container {
     width: 100%;
-    height: 100dvh;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -30,6 +30,7 @@ body {
     font-size: 2.3rem;
     margin-bottom: 20px;
 }
+
 .login {
     width: 100%;
     max-width: 330px;
@@ -53,7 +54,6 @@ body {
     color: #f2f2f2;
     outline: none;
     border-radius: 5px;
-
 }
 
 .login__input:focus {
@@ -61,7 +61,7 @@ body {
 }
 
 .login__button {
-    border:none;
+    border: none;
     padding: 15px;
     border-radius: 5px;
     font-size: 0.85rem;
@@ -125,7 +125,6 @@ body {
     font-size: 1.8rem;
 }
 
-
 .chat__messages > div {
     padding: 10px;
     width: 100%;
@@ -136,8 +135,8 @@ body {
     line-height: 22px;
 }
 
-.message--selft {
-    background-color: #f2f2f2f2;
+.message--self {
+    background-color: #f2f2f2;
     color: #121212;
     border-radius: 10px 10px 0 10px;
     align-self: flex-end;
